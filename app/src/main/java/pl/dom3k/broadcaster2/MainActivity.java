@@ -14,15 +14,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-            int counter = 0;
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent("pl.dom3k.broadcaster2.broadcast.MY_NOTIFICATION");
-                intent.putExtra("data","Notice me senpai!");
-                sendBroadcast(intent);
-
-                TextView textView = findViewById(R.id.textView);
-                textView.setText("Notified Senpai " + ++counter + " times.");
+//                TODO - if we only notified someone about something here...
             }
         });
     }
