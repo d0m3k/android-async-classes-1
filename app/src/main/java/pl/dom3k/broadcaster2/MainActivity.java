@@ -1,5 +1,6 @@
 package pl.dom3k.broadcaster2;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -24,7 +25,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-//                TODO – do something to add data for content provider
+                ContentValues values = new ContentValues();
+                values.put(MySQLiteHelper.KEY_MESSAGE, textToAdd.getText().toString());
+
+                getContentResolver().insert(MyContentProvider.CONTENT_URI, values);
             }
         });
     }
