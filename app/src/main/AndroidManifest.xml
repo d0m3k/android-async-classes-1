@@ -17,7 +17,9 @@
             </intent-filter>
         </activity>
 
-
+        <provider android:name=".MyContentProvider" android:exported="true"
+            android:readPermission="true" android:writePermission="true"
+            android:authorities="pl.dom3k.broadcaster2.MyContentProvider" />
     </application>
 
 </manifest>
