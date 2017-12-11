@@ -9,10 +9,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "database";
     private static final int DATABASE_VERSION = 1;
 
-    private static final String KEY_ID = "_id";
-    private static final String KEY_MESSAGE = "name";
+    public static final String KEY_ID = "_id";
+    public static final String KEY_MESSAGE = "message";
 
-    private static final String TABLE_NAME = "table";
+    public static final String TABLE_NAME = "tableName";
 
     private static final String DATABASE_CREATE =
             "CREATE TABLE if not exists " + TABLE_NAME + " (" +

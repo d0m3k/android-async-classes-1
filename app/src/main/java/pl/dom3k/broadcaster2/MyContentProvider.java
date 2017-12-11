@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import static pl.dom3k.broadcaster2.MySQLiteHelper.KEY_ID;
+import static pl.dom3k.broadcaster2.MySQLiteHelper.TABLE_NAME;
+
 public class MyContentProvider extends ContentProvider {
 
     private MySQLiteHelper dbHelper;
@@ -17,13 +20,13 @@ public class MyContentProvider extends ContentProvider {
     private static final int SINGLE_RECORD = 2;
     private static final String AUTHORITY = "pl.dom3k.broadcaster2.MyContentProvider";
 
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/table");
+    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
     private static final UriMatcher uriMatcher;
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(AUTHORITY, "table", TABLE);
-        uriMatcher.addURI(AUTHORITY, "table/#", SINGLE_RECORD);
+        uriMatcher.addURI(AUTHORITY, TABLE_NAME, TABLE);
+        uriMatcher.addURI(AUTHORITY, TABLE_NAME + "/#", SINGLE_RECORD);
     }
 
     @Override
@@ -37,9 +40,9 @@ public class MyContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case TABLE:
-                return "vnd.android.cursor.dir/vnd.com.as400samplecode.contentprovider.countries";
+                return "vnd.android.cursor.dir/vnd.pl.dom3k.broadcaster2.MyContentProvider.records";
             case SINGLE_RECORD:
-                return "vnd.android.cursor.item/vnd.com.as400samplecode.contentprovider.countries";
+                return "vnd.android.cursor.item/vnd.pl.dom3k.broadcaster2.MyContentProvider.records";
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -55,7 +58,7 @@ public class MyContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
-        long id = db.insert("table", null, values);
+        long id = db.insert(TABLE_NAME, null, values);
         getContext().getContentResolver().notifyChange(uri, null);
         return Uri.parse(CONTENT_URI + "/" + id);
     }
@@ -66,14 +69,14 @@ public class MyContentProvider extends ContentProvider {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        queryBuilder.setTables("table");
+        queryBuilder.setTables(TABLE_NAME);
 
         switch (uriMatcher.match(uri)) {
             case TABLE:
                 break;
             case SINGLE_RECORD:
                 String id = uri.getPathSegments().get(1);
-                queryBuilder.appendWhere("_id" + "=" + id);
+                queryBuilder.appendWhere(KEY_ID + "=" + id);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -93,14 +96,14 @@ public class MyContentProvider extends ContentProvider {
                 break;
             case SINGLE_RECORD:
                 String id = uri.getPathSegments().get(1);
-                selection = "_id" + "=" + id
+                selection = KEY_ID + "=" + id
                         + (!TextUtils.isEmpty(selection) ?
                         " AND (" + selection + ')' : "");
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
-        int deleteCount = db.delete("table", selection, selectionArgs);
+        int deleteCount = db.delete(TABLE_NAME, selection, selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
         return deleteCount;
     }
@@ -115,14 +118,14 @@ public class MyContentProvider extends ContentProvider {
                 break;
             case SINGLE_RECORD:
                 String id = uri.getPathSegments().get(1);
-                selection = "_id" + "=" + id
+                selection = KEY_ID + "=" + id
                         + (!TextUtils.isEmpty(selection) ?
                         " AND (" + selection + ')' : "");
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
-        int updateCount = db.update("table", values, selection, selectionArgs);
+        int updateCount = db.update(TABLE_NAME, values, selection, selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
         return updateCount;
     }
